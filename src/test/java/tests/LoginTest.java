@@ -1,20 +1,24 @@
 package tests;
 
-import baseTests.BaseTest;
+import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import pages.LoginPage;
+import utilities.BaseTest;
 
 public class LoginTest extends BaseTest {
 
     @Test
-    public void testSuccessfulLogin() {
-        // Instanciar la página de login
-        LoginPage loginPage = new LoginPage(page);
+    @Tag("regression")
+    public void verificarPaginaLoginTest() {
+        final var loginPage = new LoginPage(page);
+        loginPage.validateVisibleElements();
+    }
 
-        // Navegar a la URL de la aplicación
-        page.navigate("https://www.saucedemo.com/");
-
-
-
+    @Test
+    @Tag("regression")
+    public void mensajeErrorTest() {
+        final var loginPage = new LoginPage(page);
+        loginPage.fillForm("locked_out_user", "secret_sauce");
+        loginPage.verifyErrorMessage("Epic sadface: Sorry, this user has been locked out.");
     }
 }
