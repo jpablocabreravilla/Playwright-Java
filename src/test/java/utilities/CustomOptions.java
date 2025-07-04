@@ -22,7 +22,7 @@ public class CustomOptions implements OptionsFactory {
         //final var arguments = List.of("--start-maximized");
 
         return new BrowserType.LaunchOptions()
-                .setSlowMo(1000)    ;   // ralentiza para observar la ejecución
+                .setSlowMo(0)    ;   // ralentiza para observar la ejecución
                 //.setArgs(arguments);   // argumentos personalizados
     }
 }
