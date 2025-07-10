@@ -5,57 +5,64 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import pages.ShoppingPage;
-import pages.TopBar;
+import pages.TopBarPage;
 import utilities.BaseTest;
 
 public class ShoppingTest extends BaseTest {
 
     private ShoppingPage shoppingPage;
-    private TopBar topBar;
+    private TopBarPage topBar;
 
     @BeforeEach
-    public void setup() {
+    public void setUp() {
         new CommonFlows(page).loginAsStandardUser();
         shoppingPage = new ShoppingPage(page);
-        topBar = new TopBar(page);
+        topBar = new TopBarPage(page);
     }
 
     @Test
     @Tag("regression")
-    public void shouldVerifyShoppingPage() {
-        shoppingPage.verifyPage();
+    public void shouldVerifyShoppingPageIsVisible() {
+        shoppingPage.verifyPageIsDisplayed();
     }
 
     @Test
     @Tag("regression")
-    public void shouldAddAndRemoveItem() {
-        shoppingPage.verifyAddRemove("Sauce Labs Fleece Jacket");
+    public void shouldAddAndRemoveAnItem() {
+        shoppingPage.verifyAddRemoveButtonText("Sauce Labs Fleece Jacket");
     }
 
     @Test
     @Tag("regression")
-    public void shouldVerifyItemPrice() {
+    public void shouldVerifyFirstItemPrice() {
         shoppingPage.verifyItemPrice(0, "$29.99");
     }
 
     @Test
     @Tag("regression")
-    public void shouldAddToCartAndVerifyCounter() {
-        shoppingPage.clickAddToCartButton();
+    public void shouldAddItemsToCartAndVerifyCounter() {
+        shoppingPage.clickAllAddToCartButtons();
         topBar.verifyItemCounter("6");
     }
 
     @Test
     @Tag("regression")
-    public void shouldSortByPriceHighToLow() {
-        shoppingPage.orderItems("hilo");
-        shoppingPage.verifyItemPrices("$49.99", "$7.99");
+    public void shouldSortItemsByPriceHighToLow() {
+        shoppingPage.sortItems("hilo");
+        shoppingPage.verifyFirstAndLastItemPrices("$49.99", "$7.99");
     }
 
     @Test
     @Tag("regression")
-    public void shouldSortByNameZtoA() {
-        shoppingPage.orderItems("za");
-        shoppingPage.verifyItemNames("Test.allTheThings() T-Shirt (Red)", "Sauce Labs Backpack");
+    public void shouldSortItemsByPriceZtoA() {
+        shoppingPage.sortItems("za");
+        shoppingPage.verifyFirstAndLastItemPrices("$15.99", "$29.99");
+    }
+
+    @Test
+    @Tag("regression")
+    public void shouldSortItemsByNameZToA() {
+        shoppingPage.sortItems("za");
+        shoppingPage.verifyFirstAndLastItemNames("Test.allTheThings() T-Shirt (Red)", "Sauce Labs Backpack");
     }
 }
