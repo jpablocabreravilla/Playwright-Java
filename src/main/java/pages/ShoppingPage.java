@@ -5,6 +5,8 @@ import com.microsoft.playwright.Page;
 import io.qameta.allure.Step;
 import utilities.Logs;
 
+import java.util.List;
+
 import static com.microsoft.playwright.assertions.PlaywrightAssertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
 
@@ -65,9 +67,13 @@ public class ShoppingPage extends BasePage {
 
     @Step("Clicking all 'Add to Cart' buttons")
     public void clickAllAddToCartButtons() {
-        Logs.info("Clicking all 'Add to Cart' buttons");
-        final var buttons = addToCartButton.all();
-        buttons.forEach(Locator::click);
+        Logs.info("Clicking all visible 'Add to Cart' buttons");
+        List<Locator> buttons = addToCartButton.all();
+        Logs.info("Total 'Add to Cart' buttons found: " + buttons.size());
+        buttons.forEach(button -> {
+            assertThat(button).isVisible();
+            button.click();
+        });
     }
 
     @Step("Sorting items")
@@ -107,5 +113,21 @@ public class ShoppingPage extends BasePage {
         Locator item = this.itemName.getByText(itemName);
         assertThat(item).isVisible();
         item.click();
+    }
+
+    @Step("Clicking 'Remove' button for item: {itemName}")
+    public void clickRemoveFromCartButton(String itemName) {
+        Logs.info("Clicking 'Remove' for item: " + itemName);
+        Locator removeButton = getItemButton("Remove", itemName);
+        assertThat(removeButton).isVisible();
+        removeButton.click();
+    }
+
+    @Step("Clicking 'Add to Cart' button for item: {itemName}")
+    public void clickAddToCartButton(String itemName) {
+        Logs.info("Clicking 'Add to Cart' for item: " + itemName);
+        Locator addButton = getItemButton("Add to cart", itemName);
+        assertThat(addButton).isVisible();
+        addButton.click();
     }
 }

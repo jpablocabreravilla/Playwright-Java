@@ -22,4 +22,10 @@ public class TopBarPage extends BasePage {
         Logs.info("Validating items counter");
         PlaywrightAssertions.assertThat(itemCounter).hasText(expectedCount);
     }
+
+    @Step("Clicking on the shopping cart icon")
+    public void clickShoppingCart() {
+        Logs.info("Clicking on the shopping cart icon");
+        shoppingCart.click();
+    }
 }
