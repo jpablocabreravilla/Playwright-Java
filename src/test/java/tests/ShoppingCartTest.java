@@ -9,6 +9,7 @@ import pages.TopBarPage;
 import utilities.BaseTest;
 import utilities.CommonFlows;
 import utilities.Logs;
+import utilities.TestLogger;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -19,11 +20,10 @@ public class ShoppingCartTest extends BaseTest {
     private TopBarPage topBarPage;
 
     @BeforeEach
-    public void setUp() {
-        Logs.info("Logging in as a standard user");
+    public void loginAndInitializePages() {
+        Logs.info("Logging in as standard user");
         new CommonFlows(page).loginAsStandardUser();
 
-        Logs.info("Initializing required page objects");
         shoppingPage = new ShoppingPage(page);
         topBarPage = new TopBarPage(page);
     }
@@ -31,7 +31,7 @@ public class ShoppingCartTest extends BaseTest {
     @Test
     @Tag("regression")
     public void shouldRemoveItemFromCartSuccessfully() {
-        Logs.info("Test: shouldRemoveItemFromCartSuccessfully");
+        TestLogger.start("shouldRemoveItemFromCartSuccessfully");
 
         List<String> itemsToAdd = new ArrayList<>(List.of(
                 "Sauce Labs Fleece Jacket",
@@ -39,31 +39,30 @@ public class ShoppingCartTest extends BaseTest {
                 "Sauce Labs Bike Light"
         ));
 
-        itemsToAdd.forEach(item -> {
-            Logs.info("Adding item to cart: " + item);
-            shoppingPage.clickAddToCartButton(item);
-        });
+        Logs.info("Adding items to cart: " + itemsToAdd);
+        itemsToAdd.forEach(shoppingPage::clickAddToCartButton);
 
         String expectedCount = String.valueOf(itemsToAdd.size());
         topBarPage.verifyItemCounter(expectedCount);
-        topBarPage.clickShoppingCart();
 
+        topBarPage.clickShoppingCart();
         ShoppingCartPage cartPage = new ShoppingCartPage(page);
         cartPage.validateItemNames(itemsToAdd);
 
         String itemToRemove = "Sauce Labs Bike Light";
-        Logs.info("Removing item from cart: " + itemToRemove);
+        Logs.info("Removing item: " + itemToRemove);
         cartPage.removeItem(itemToRemove);
+
         itemsToAdd.remove(itemToRemove);
         cartPage.validateItemNames(itemsToAdd);
 
-        Logs.info("Test completed: shouldRemoveItemFromCartSuccessfully");
+        TestLogger.pass("shouldRemoveItemFromCartSuccessfully");
     }
 
     @Test
     @Tag("regression")
     public void shouldDisplayCorrectItemsInCart() {
-        Logs.info("Test: shouldDisplayCorrectItemsInCart");
+        TestLogger.start("shouldDisplayCorrectItemsInCart");
 
         List<String> itemsToAdd = List.of(
                 "Sauce Labs Fleece Jacket",
@@ -71,19 +70,18 @@ public class ShoppingCartTest extends BaseTest {
                 "Sauce Labs Bike Light"
         );
 
-        itemsToAdd.forEach(item -> {
-            Logs.info("Adding item to cart: " + item);
-            shoppingPage.clickAddToCartButton(item);
-        });
+        Logs.info("Adding items to cart: " + itemsToAdd);
+        itemsToAdd.forEach(shoppingPage::clickAddToCartButton);
 
         String expectedCount = String.valueOf(itemsToAdd.size());
         topBarPage.verifyItemCounter(expectedCount);
-        topBarPage.clickShoppingCart();
 
+        topBarPage.clickShoppingCart();
         ShoppingCartPage cartPage = new ShoppingCartPage(page);
         cartPage.validateItemNames(itemsToAdd);
+
         cartPage.clickCheckout();
 
-        Logs.info("Test completed: shouldDisplayCorrectItemsInCart");
+        TestLogger.pass("shouldDisplayCorrectItemsInCart");
     }
 }

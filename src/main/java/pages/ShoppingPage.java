@@ -15,30 +15,32 @@ public class ShoppingPage extends BasePage {
     private final Locator title;
     private final Locator inventoryList;
     private final Locator sortDropdown;
-    private final Locator itemPrice;
-    private final Locator itemName;
-    private final Locator addToCartButton;
+    private final Locator itemPrices;
+    private final Locator itemNames;
+    private final Locator addToCartButtons;
 
     public ShoppingPage(Page page) {
         super(page);
-        title = page.getByText("Products");
-        inventoryList = page.getByTestId("inventory-list");
-        sortDropdown = page.getByTestId("product-sort-container");
-        itemPrice = page.getByTestId("inventory-item-price");
-        itemName = page.getByTestId("inventory-item-name");
-        addToCartButton = page.locator(".btn_inventory");
+        this.title = page.getByText("Products");
+        this.inventoryList = page.getByTestId("inventory-list");
+        this.sortDropdown = page.getByTestId("product-sort-container");
+        this.itemPrices = page.getByTestId("inventory-item-price");
+        this.itemNames = page.getByTestId("inventory-item-name");
+        this.addToCartButtons = page.locator(".btn_inventory");
     }
 
     private Locator getItemButton(String state, String name) {
-        final var buttonText = String.format("%s %s", state, name);     // Add to cart Sauce Labs Backpack
-        final var lowerCaseText = buttonText.toLowerCase();             // add to cart sauce labs backpack
-        final var testId = lowerCaseText.replace(" ", "-");             // add-to-cart-sauce-labs-backpack
+        final var testId = String.format("%s %s", state, name)
+                .toLowerCase()
+                .replace(" ", "-");
 
         return page.getByTestId(testId);
     }
 
+    @Step("Verifying that Shopping Page is visible")
     public void verifyPageIsDisplayed() {
         Logs.info("Verifying the Shopping page is displayed");
+
         assertAll(
                 () -> assertThat(title).isVisible(),
                 () -> assertThat(inventoryList).isVisible(),
@@ -46,87 +48,81 @@ public class ShoppingPage extends BasePage {
         );
     }
 
-    @Step("Verifying 'Add to Cart' and 'Remove' button texts")
+    @Step("Verifying button toggles from 'Add to cart' to 'Remove' for item: {itemName}")
     public void verifyAddRemoveButtonText(String itemName) {
-        Logs.info("Verifying 'Add to cart' button text");
+        Logs.info("Checking button toggle for item: " + itemName);
+
         final var addButton = getItemButton("Add to cart", itemName);
         assertThat(addButton).hasText("Add to cart");
-
-        Logs.info("Clicking 'Add to cart' button");
         addButton.click();
 
-        Logs.info("Verifying 'Remove' button text");
-        assertThat(getItemButton("Remove", itemName)).hasText("Remove");
+        final var removeButton = getItemButton("Remove", itemName);
+        assertThat(removeButton).hasText("Remove");
     }
 
-    @Step("Verifying item price")
-    public void verifyItemPrice(int index, String expected) {
-        Logs.info("Verifying item price at index " + index);
-        assertThat(itemPrice.nth(index)).hasText(expected);
+    @Step("Verifying item price at index {index}")
+    public void verifyItemPrice(int index, String expectedPrice) {
+        Logs.info("Verifying price at index " + index + " is: " + expectedPrice);
+        assertThat(itemPrices.nth(index)).hasText(expectedPrice);
     }
 
-    @Step("Clicking all 'Add to Cart' buttons")
+    @Step("Clicking all visible 'Add to Cart' buttons")
     public void clickAllAddToCartButtons() {
-        Logs.info("Clicking all visible 'Add to Cart' buttons");
-        List<Locator> buttons = addToCartButton.all();
-        Logs.info("Total 'Add to Cart' buttons found: " + buttons.size());
+        final List<Locator> buttons = addToCartButtons.all();
+        Logs.info("Found " + buttons.size() + " 'Add to Cart' buttons");
+
         buttons.forEach(button -> {
             assertThat(button).isVisible();
             button.click();
         });
     }
 
-    @Step("Sorting items")
+    @Step("Sorting items by option: {value}")
     public void sortItems(String value) {
-        Logs.info("Sorting items");
+        Logs.info("Sorting items by: " + value);
         sortDropdown.selectOption(value);
     }
 
     @Step("Verifying first and last item prices")
     public void verifyFirstAndLastItemPrices(String first, String last) {
-        Logs.info("Verifying first and last item prices");
-
-        final var firstPrice = itemPrice.first();
-        final var lastPrice = itemPrice.last();
+        Logs.info("Verifying first and last item prices: " + first + ", " + last);
 
         assertAll(
-                () -> assertThat(firstPrice).hasText(first),
-                () -> assertThat(lastPrice).hasText(last)
+                () -> assertThat(itemPrices.first()).hasText(first),
+                () -> assertThat(itemPrices.last()).hasText(last)
         );
     }
 
     @Step("Verifying first and last item names")
     public void verifyFirstAndLastItemNames(String first, String last) {
-        Logs.info("Verifying first and last item names");
-
-        final var firstItemName = itemName.first();
-        final var lastItemName = itemName.last();
+        Logs.info("Verifying first and last item names: " + first + ", " + last);
 
         assertAll(
-                () -> assertThat(firstItemName).hasText(first),
-                () -> assertThat(lastItemName).hasText(last)
+                () -> assertThat(itemNames.first()).hasText(first),
+                () -> assertThat(itemNames.last()).hasText(last)
         );
     }
 
+    @Step("Clicking on item title: {itemName}")
     public void clickItemTitle(String itemName) {
-        Logs.info("Clicking item title: " + itemName);
-        Locator item = this.itemName.getByText(itemName);
+        Logs.info("Clicking on item title: " + itemName);
+        final Locator item = itemNames.getByText(itemName);
         assertThat(item).isVisible();
         item.click();
     }
 
     @Step("Clicking 'Remove' button for item: {itemName}")
     public void clickRemoveFromCartButton(String itemName) {
-        Logs.info("Clicking 'Remove' for item: " + itemName);
-        Locator removeButton = getItemButton("Remove", itemName);
+        Logs.info("Removing item from cart: " + itemName);
+        final var removeButton = getItemButton("Remove", itemName);
         assertThat(removeButton).isVisible();
         removeButton.click();
     }
 
     @Step("Clicking 'Add to Cart' button for item: {itemName}")
     public void clickAddToCartButton(String itemName) {
-        Logs.info("Clicking 'Add to Cart' for item: " + itemName);
-        Locator addButton = getItemButton("Add to cart", itemName);
+        Logs.info("Adding item to cart: " + itemName);
+        final var addButton = getItemButton("Add to cart", itemName);
         assertThat(addButton).isVisible();
         addButton.click();
     }

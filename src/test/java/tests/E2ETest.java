@@ -7,6 +7,7 @@ import pages.*;
 import utilities.BaseTest;
 import utilities.CommonFlows;
 import utilities.Logs;
+import utilities.TestLogger;
 
 import java.util.List;
 import java.util.Map;
@@ -16,16 +17,21 @@ public class E2ETest extends BaseTest {
     @Test
     @Tag("regression")
     public void shouldDisplayCorrectItemsInCart() {
-        Logs.info("Test started: shouldDisplayCorrectItemsInCart");
+        TestLogger.start("shouldDisplayCorrectItemsInCart");
 
-        Logs.info("Logging in as a standard user");
+        // --- Login phase ---
+        Logs.info("Logging in as standard user");
         new CommonFlows(page).loginAsStandardUser();
 
-        Logs.info("Initializing page objects");
+        // --- Page object instantiations ---
         ShoppingPage shoppingPage = new ShoppingPage(page);
         TopBarPage topBarPage = new TopBarPage(page);
+        ShoppingCartPage shoppingCartPage = new ShoppingCartPage(page);
+        CheckoutYourInformationPage checkoutPage = new CheckoutYourInformationPage(page);
+        CheckoutOverviewPage checkoutOverviewPage = new CheckoutOverviewPage(page);
+        CheckoutComplete checkoutComplete = new CheckoutComplete(page);
 
-        Logs.info("Preparing items to add to cart");
+        // --- Prepare items to add ---
         List<String> itemsToAdd = List.of(
                 "Sauce Labs Fleece Jacket",
                 "Sauce Labs Backpack",
@@ -33,42 +39,40 @@ public class E2ETest extends BaseTest {
                 "Test.allTheThings() T-Shirt (Red)"
         );
 
-        Logs.info("Adding items to the shopping cart");
-        itemsToAdd.forEach(item -> {
-            Logs.info("Adding item: " + item);
-            shoppingPage.clickAddToCartButton(item);
-        });
+        Logs.info("Adding items to cart: " + itemsToAdd);
+        itemsToAdd.forEach(shoppingPage::clickAddToCartButton);
 
+        // --- Verify cart counter ---
         String expectedCount = String.valueOf(itemsToAdd.size());
-        Logs.info("Verifying item counter equals: " + expectedCount);
         topBarPage.verifyItemCounter(expectedCount);
 
-        Logs.info("Navigating to shopping cart");
+        // --- Go to cart and verify contents ---
         topBarPage.clickShoppingCart();
+        shoppingCartPage.validateItemNames(itemsToAdd);
 
-        Logs.info("Validating items in the cart");
-        ShoppingCartPage cartPage = new ShoppingCartPage(page);
-        cartPage.validateItemNames(itemsToAdd);
+        // --- Proceed to checkout ---
+        shoppingCartPage.clickCheckout();
 
-        Logs.info("Proceeding to checkout");
-        cartPage.clickCheckout();
-
-        Logs.info("Filling in checkout information with generated user data");
-        CheckoutYourInformationPage checkoutPage = new CheckoutYourInformationPage(page);
+        // --- Generate fake user info ---
         Faker faker = new Faker();
-
         Map<String, String> userData = Map.of(
                 "firstName", faker.name().firstName(),
                 "lastName", faker.name().lastName(),
                 "zipCode", faker.address().zipCode()
         );
+        Logs.info("Generated user data: " + userData);
 
-        userData.forEach((key, value) -> Logs.info("Generated " + key + ": " + value));
+        // --- Fill checkout form ---
         checkoutPage.fillInformation(userData);
 
-        ShoppingCartPage shoppingCartPage = new ShoppingCartPage(page);
-        shoppingCartPage.clickCheckout();
+        // --- Final validations ---
+        shoppingCartPage.validateItemNames(itemsToAdd);
+        checkoutOverviewPage.verifyItemPrices();
+        checkoutOverviewPage.clickBtnFinish();
 
-        Logs.info("Test completed successfully: shouldDisplayCorrectItemsInCart");
+        // --- Checkout complete ---
+        // Optional: checkoutComplete.validatePageLoaded();
+
+        TestLogger.pass("shouldDisplayCorrectItemsInCart");
     }
 }

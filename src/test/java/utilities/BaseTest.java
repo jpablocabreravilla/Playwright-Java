@@ -12,12 +12,16 @@ public class BaseTest {
     @BeforeEach
     public void setUp(Page page) {
         this.page = page;
-        Logs.info("Navigating to the base URL");
+        Logs.info("Navigating to base URL: '/'");
         page.navigate("/");
     }
 
     @AfterEach
     public void tearDown() {
+        Logs.info("Closing test session");
+        if (page != null) {
+            page.close();
+        }
     }
 
 }

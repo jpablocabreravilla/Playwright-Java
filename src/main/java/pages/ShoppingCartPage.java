@@ -14,32 +14,29 @@ public class ShoppingCartPage extends BasePage {
 
     private final Locator cartItems;
     private final Locator checkoutButton;
-    private final Locator finishBtn;
 
     public ShoppingCartPage(Page page) {
         super(page);
-        cartItems = page.locator(".cart_item");
-        checkoutButton = page.locator("[name='checkout']");
-        finishBtn = page.locator("[name='finish']");
+        this.cartItems = page.locator(".cart_item");
+        this.checkoutButton = page.locator("[name='checkout']");
     }
 
-    @Step("Getting all item names in the cart")
+    @Step("Getting all item names from cart")
     public List<String> getItemNames() {
-        Logs.info("Extracting item names from each cart item...");
+        Logs.info("Extracting item names from cart items...");
 
-        int itemCount = cartItems.count();
-        Logs.info("Total items found in cart: " + itemCount);
+        final int itemCount = cartItems.count();
+        Logs.info("Total items found: " + itemCount);
 
-        List<String> names = new ArrayList<>();
-
+        final List<String> names = new ArrayList<>();
         for (int i = 0; i < itemCount; i++) {
-            Locator item = cartItems.nth(i);
-            String name = item.locator(".inventory_item_name").innerText().trim();
+            final Locator item = cartItems.nth(i);
+            final String name = item.locator(".inventory_item_name").innerText().trim();
             Logs.info("Item " + (i + 1) + ": " + name);
             names.add(name);
         }
 
-        Logs.info("All extracted item names: " + names);
+        Logs.info("Final list of item names: " + names);
         return names;
     }
 
@@ -47,31 +44,31 @@ public class ShoppingCartPage extends BasePage {
     public void removeItem(String itemName) {
         Logs.info("Attempting to remove item: " + itemName);
 
-        Locator item = cartItems
+        final Locator item = cartItems
                 .filter(new Locator.FilterOptions().setHasText(itemName));
-        Locator removeBtn = item.locator("button:has-text('Remove')");
+        final Locator removeButton = item.locator("button:has-text('Remove')");
 
-        Logs.info("Clicking 'Remove' button for item: " + itemName);
-        removeBtn.click();
+        Logs.info("Clicking 'Remove' for item: " + itemName);
+        removeButton.click();
     }
 
-    @Step("Clicking on the 'Checkout' button")
+    @Step("Clicking on 'Checkout' button")
     public void clickCheckout() {
-        Logs.info("Clicking on 'Checkout' button");
+        Logs.info("Clicking 'Checkout' button");
         checkoutButton.click();
     }
 
-    @Step("Validating presence of expected items in cart")
+    @Step("Validating that the following items are present in cart: {expectedItemNames}")
     public void validateItemNames(List<String> expectedItemNames) {
-        Logs.info("Starting validation of expected item names...");
+        Logs.info("Starting validation of item names...");
         Logs.info("Expected items: " + expectedItemNames);
 
-        List<String> actualItemNames = getItemNames();
+        final List<String> actualItemNames = getItemNames();
         Logs.info("Actual items in cart: " + actualItemNames);
 
         for (String expected : expectedItemNames) {
-            boolean found = actualItemNames.contains(expected);
-            Logs.info("Checking item: " + expected + " - Found: " + found);
+            final boolean found = actualItemNames.contains(expected);
+            Logs.info("Checking if item is present: " + expected + " → " + (found ? "✔" : "✘"));
             assertTrue(found, "Item NOT found in cart: " + expected);
         }
     }

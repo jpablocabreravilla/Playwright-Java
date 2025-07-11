@@ -9,22 +9,23 @@ import pages.ShoppingPage;
 import utilities.BaseTest;
 import utilities.CommonFlows;
 import utilities.Logs;
+import utilities.TestLogger;
 
 public class ItemDetailTest extends BaseTest {
 
     private ShoppingPage shoppingPage;
 
     @BeforeEach
-    public void setUp() {
+    public void loginAndPreparePage() {
         Logs.info("Logging in as standard user");
         new CommonFlows(page).loginAsStandardUser();
 
-        Logs.info("Initializing required pages");
+        Logs.info("Opening Shopping Page");
         shoppingPage = new ShoppingPage(page);
     }
 
-    @Tag("regression")
     @ParameterizedTest
+    @Tag("regression")
     @ValueSource(strings = {
             "Sauce Labs Backpack",
             "Sauce Labs Bike Light",
@@ -34,20 +35,19 @@ public class ItemDetailTest extends BaseTest {
             "Test.allTheThings() T-Shirt (Red)"
     })
     public void shouldDisplayCorrectItemDetails(String itemName) {
-        Logs.info("Test: Verify selected item details");
+        TestLogger.start("shouldDisplayCorrectItemDetails - " + itemName);
 
-        Logs.info("Selecting item: " + itemName);
+        Logs.info("Clicking on item: " + itemName);
         shoppingPage.clickItemTitle(itemName);
 
-        Logs.info("Navigating to item detail page");
         ItemDetailPage itemDetailPage = new ItemDetailPage(page);
 
-        Logs.info("Validating visible elements on the item detail page");
+        Logs.info("Validating item detail components are visible");
         itemDetailPage.validateVisibleElements();
 
-        Logs.info("Validating item name");
+        Logs.info("Validating item name is: " + itemName);
         itemDetailPage.validateItemName(itemName);
 
-        Logs.info("Test completed successfully");
+        TestLogger.pass("shouldDisplayCorrectItemDetails - " + itemName);
     }
 }
