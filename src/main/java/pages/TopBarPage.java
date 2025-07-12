@@ -4,6 +4,7 @@ import com.microsoft.playwright.Locator;
 import com.microsoft.playwright.Page;
 import com.microsoft.playwright.assertions.PlaywrightAssertions;
 import io.qameta.allure.Step;
+import utilities.AllureUtils;
 import utilities.Logs;
 
 public class TopBarPage extends BasePage {
@@ -21,6 +22,8 @@ public class TopBarPage extends BasePage {
     public void verifyItemCounter(String expectedCount) {
         Logs.info("Verifying shopping cart badge shows: " + expectedCount);
         PlaywrightAssertions.assertThat(itemCounterBadge).hasText(expectedCount);
+
+        AllureUtils.attachScreenshot(page);
     }
 
     @Step("Clicking on shopping cart icon")

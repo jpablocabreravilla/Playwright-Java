@@ -20,6 +20,7 @@ public class BaseTest {
     public void tearDown() {
         Logs.info("Closing test session");
         if (page != null) {
+            AllureUtils.attachScreenshot(page, "Final Screenshot");
             page.close();
         }
     }

@@ -3,6 +3,7 @@ package pages;
 import com.microsoft.playwright.Locator;
 import com.microsoft.playwright.Page;
 import io.qameta.allure.Step;
+import utilities.AllureUtils;
 import utilities.Logs;
 
 import java.util.Map;
@@ -46,5 +47,7 @@ public class CheckoutYourInformationPage extends BasePage {
 
         Logs.info("Clicking 'Continue' button");
         continueButton.click();
+
+        AllureUtils.attachScreenshot(page);
     }
 }

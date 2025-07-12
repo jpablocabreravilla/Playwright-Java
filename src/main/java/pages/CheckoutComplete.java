@@ -3,6 +3,7 @@ package pages;
 import com.microsoft.playwright.Locator;
 import com.microsoft.playwright.Page;
 import com.microsoft.playwright.options.AriaRole;
+import utilities.AllureUtils;
 
 import static com.microsoft.playwright.assertions.PlaywrightAssertions.assertThat;
 
@@ -27,7 +28,7 @@ public class CheckoutComplete extends BasePage {
         backHomeButton = container.getByRole(AriaRole.BUTTON,
                 new Locator.GetByRoleOptions().setName("Back Home"));
 
-        confirmationText = container.locator(".//div[contains(@class, 'complete-text')]");
+        confirmationText = container.locator("//div[contains(@class, 'complete-text')]");
     }
 
     public void selectBackHomeBtn() {
@@ -41,5 +42,7 @@ public class CheckoutComplete extends BasePage {
         assertThat(confirmationText).hasText(
                 "Your order has been dispatched, and will arrive just as fast as the pony can get there!"
         );
+
+        AllureUtils.attachScreenshot(page);
     }
 }

@@ -4,6 +4,7 @@ import com.microsoft.playwright.Locator;
 import com.microsoft.playwright.Page;
 import io.qameta.allure.Step;
 import org.junit.jupiter.api.Assertions;
+import utilities.AllureUtils;
 import utilities.Logs;
 
 import java.util.ArrayList;
@@ -120,8 +121,9 @@ public class CheckoutOverviewPage extends BasePage {
 
         Logs.info("Comparing calculated total with UI value...");
         Assertions.assertEquals(expectedTotal, uiTotal, 0.01, "Total mismatch");
-    }
 
+        AllureUtils.attachScreenshot(page);
+    }
 
     public void clickBtnFinish() {
         btnFinish.click();

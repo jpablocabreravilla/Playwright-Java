@@ -15,8 +15,11 @@ import java.util.Map;
 public class E2ETest extends BaseTest {
 
     @Test
-    @Tag("regression")
+    @Tag("E2E")
     public void EndToEndTest() {
+
+        System.out.println("[DEBUG] HEADLESS: " + System.getProperty("headless"));
+
         TestLogger.start("shouldDisplayCorrectItemsInCart");
 
         // --- Login phase ---

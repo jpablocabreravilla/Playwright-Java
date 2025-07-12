@@ -8,21 +8,21 @@ public class CustomOptions implements OptionsFactory {
 
     @Override
     public Options getOptions() {
+        boolean isHeadless = Boolean.parseBoolean(System.getProperty("headless", "false"));
+
         return new Options()
-                .setLaunchOptions(createLaunchOptions())          // Opciones de lanzamiento
-                .setContextOptions(null)                          // Puedes personalizar si deseas
-                .setHeadless(false)                               // Mostrar navegador
-                .setBrowserName("chromium")                       // chromium | firefox | webkit
-                .setChannel("chrome")                             // chrome o edge
-                .setTestIdAttribute("data-test")                  // para localizadores personalizados
-                .setBaseUrl("https://www.saucedemo.com");         // URL base para los tests
+                .setLaunchOptions(createLaunchOptions(isHeadless))
+                .setContextOptions(null)
+                .setHeadless(isHeadless)
+                .setBrowserName("chromium")
+                .setChannel("chrome")
+                .setTestIdAttribute("data-test")
+                .setBaseUrl("https://www.saucedemo.com");
     }
 
-    private BrowserType.LaunchOptions createLaunchOptions() {
-        //final var arguments = List.of("--start-maximized");
-
+    private BrowserType.LaunchOptions createLaunchOptions(boolean isHeadless) {
         return new BrowserType.LaunchOptions()
-                .setSlowMo(0)    ;   // ralentiza para observar la ejecución
-                //.setArgs(arguments);   // argumentos personalizados
+                .setHeadless(isHeadless)
+                .setSlowMo(0);
     }
 }

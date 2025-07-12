@@ -3,6 +3,7 @@ package pages;
 import com.microsoft.playwright.Locator;
 import com.microsoft.playwright.Page;
 import io.qameta.allure.Step;
+import utilities.AllureUtils;
 import utilities.Logs;
 
 import java.util.ArrayList;
@@ -71,5 +72,7 @@ public class ShoppingCartPage extends BasePage {
             Logs.info("Checking if item is present: " + expected + " → " + (found ? "✔" : "✘"));
             assertTrue(found, "Item NOT found in cart: " + expected);
         }
+
+        AllureUtils.attachScreenshot(page);
     }
 }
