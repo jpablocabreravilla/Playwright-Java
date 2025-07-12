@@ -16,7 +16,7 @@ public class E2ETest extends BaseTest {
 
     @Test
     @Tag("regression")
-    public void shouldDisplayCorrectItemsInCart() {
+    public void EndToEndTest() {
         TestLogger.start("shouldDisplayCorrectItemsInCart");
 
         // --- Login phase ---
@@ -71,7 +71,8 @@ public class E2ETest extends BaseTest {
         checkoutOverviewPage.clickBtnFinish();
 
         // --- Checkout complete ---
-        // Optional: checkoutComplete.validatePageLoaded();
+        checkoutComplete.verifyCheckoutComplete();
+        checkoutComplete.selectBackHomeBtn();
 
         TestLogger.pass("shouldDisplayCorrectItemsInCart");
     }
