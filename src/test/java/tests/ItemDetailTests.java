@@ -11,7 +11,7 @@ import utilities.CommonFlows;
 import utilities.Logs;
 import utilities.TestLogger;
 
-public class ItemDetailTest extends BaseTest {
+public class ItemDetailTests extends BaseTest {
 
     private ShoppingPage shoppingPage;
 

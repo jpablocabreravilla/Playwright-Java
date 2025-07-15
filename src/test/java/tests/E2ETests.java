@@ -12,7 +12,7 @@ import utilities.TestLogger;
 import java.util.List;
 import java.util.Map;
 
-public class E2ETest extends BaseTest {
+public class E2ETests extends BaseTest {
 
     @Test
     @Tag("E2E")

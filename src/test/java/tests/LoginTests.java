@@ -6,7 +6,7 @@ import pages.LoginPage;
 import utilities.BaseTest;
 import utilities.TestLogger;
 
-public class LoginTest extends BaseTest {
+public class LoginTests extends BaseTest {
 
     @Test
     @Tag("regression")

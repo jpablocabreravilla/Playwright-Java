@@ -10,7 +10,7 @@ import utilities.CommonFlows;
 import utilities.Logs;
 import utilities.TestLogger;
 
-public class ShoppingTest extends BaseTest {
+public class ShoppingTests extends BaseTest {
 
     private ShoppingPage shoppingPage;
     private TopBarPage topBar;

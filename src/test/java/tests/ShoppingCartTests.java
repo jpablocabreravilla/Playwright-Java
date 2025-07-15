@@ -14,7 +14,7 @@ import utilities.TestLogger;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ShoppingCartTest extends BaseTest {
+public class ShoppingCartTests extends BaseTest {
 
     private ShoppingPage shoppingPage;
     private TopBarPage topBarPage;
